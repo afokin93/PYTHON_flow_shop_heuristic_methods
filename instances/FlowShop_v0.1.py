@@ -85,13 +85,15 @@ class Solution:
         return increment
 
 
-    def add_moves(self) -> Iterable[Component]:
-    # Generate all pairs of jobs in the sequence
-        for i in range(len(self.sequence)):
-            for j in range(i + 1, len(self.sequence)):
-                # Yield a tuple representing a swap of jobs i and j
-                yield (i, j)
-
+    def add_moves(self) -> Iterable[tuple[Component, Component]]:
+        # Generate all pairs of jobs in the sequence, including mirrored pairs
+        moves1 = [(i, j) for i in range(len(self.sequence)) for j in range(i + 1, len(self.sequence))]
+        moves2 = [(j, i) for i in range(len(self.sequence)) for j in range(i + 1, len(self.sequence))]
+        # Concatenate the two sets of moves
+        all_moves = moves1 + moves2
+        # Yield the pairs in the desired order
+        for move in all_moves:
+            yield move
 
     def add(self, job: Component) -> None:
     # Add the job to the end of the sequence
@@ -186,3 +188,7 @@ if __name__ == '__main__':
     s1.add(new_job)
     print("\nUpdated Solution:")
     print(s1.sequence)    
+
+    # Imprimir o tempo total do makespan
+    total_makespan = s1.objective()
+    print("\nTotal Makespan Time:", total_makespan)
