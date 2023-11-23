@@ -102,14 +102,14 @@ class Solution:
 
 
 class Problem:
-    def __init__(self, jobs: list[Component], num_machines: int):
+    def __init__(self, jobs: list[Component], num_machines: int, pt: int):
         self.jobs = jobs  # list of jobs
-        self.num_jobs = len(jobs)
         self.num_machines = num_machines  # Adicionando o número de máquinas como um atributo
-
+        self.processing_times = pt
+        self.num_jobs = len(pt)
 
     def __str__(self):
-        s = ["{} jobs, {} machines".format(self.num_jobs, self.num_machines)]
+        s = ["{} jobs, {} machines".format(len(self.processing_times), self.num_machines)]
         for job in self.jobs:
             s.append("Job {}: {}".format(job.job_id, job.processing_times))
         return "\n".join(s)
@@ -119,24 +119,21 @@ class Problem:
     def from_textio(cls, f: TextIO) -> Problem:
         line = f.readline().split()
         num_jobs, num_machines = int(line[0]), int(line[1])
-        print(f"Number of jobs: {num_jobs}, Number of machines: {num_machines}")
+        #print(f"Number of jobs: {num_jobs}, Number of machines: {num_machines}")
         jobs = []
 
         for i in range(num_machines):
             processing_times = list(map(int, f.readline().split()))
-            print("Processing times for each job in machine {}: {}".format(i, processing_times))
-            #print("Expected number of machines: {}".format(num_machines))
-            print(processing_times)
-            #print("Actual number of machines in processing_times: {}".format(len(processing_times)))
-            #assert len(processing_times) == num_machines
+            #print("Processing times for each job in machine {}: {}".format(i, processing_times))
+            #print(processing_times)
             jobs.append(Component(i, processing_times))
-        return cls(jobs, num_machines)
+        return cls(jobs, num_machines, processing_times)
 
 
     def initial_solution(self) -> Solution:
         # Criar uma sequência inicial com base no número de máquinas
         initial_sequence = [Component(i, [0] * self.num_machines) for i in range(self.num_jobs)]
-            # Adicionar os valores específicos para cada processing_times
+        # Adicionar os valores específicos para cada processing_times
         return Solution(self, initial_sequence)
 
 

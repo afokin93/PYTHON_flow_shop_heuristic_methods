@@ -5,6 +5,10 @@ import sys, random
 
 Objective = Any
 
+
+# ------------------------------------------------------------------------------------------------------- #
+
+
 class Component: #used to represent a job
     def __init__(self, job_id: int, processing_times: list[int]):
         self.job_id = job_id
@@ -14,45 +18,50 @@ class Component: #used to represent a job
 #print(job.job_id)  # Output: 1
 #print(job.processing_times)  # Output: [2, 3, 4]
 
+
+# ------------------------------------------------------------------------------------------------------- #
+
+
 class Solution:
     def __init__(self, problem, sequence):
         self.problem = problem
         self.sequence = sequence  # sequence of jobs
 
+
     def __str__(self):
         return "->".join([str(job.job_id) for job in self.sequence])
 
+
     def is_feasible(self) -> bool:
         """ Return whether the solution is feasible or not """
-        return len(self.sequence) == len(self.problem.components)
+        return len(self.sequence) == self.problem.num_jobs
+
 
     def objective(self) -> Optional[Objective]:
         if not self.is_feasible():
             return None
-
-    # Initialize a matrix to hold the completion times of each job on each machine
+        # Initialize a matrix to hold the completion times of each job on each machine
         completion_times = [[0 for _ in range(self.problem.num_machines)] for _ in range(self.problem.num_jobs)]
-
-    # Calculate the completion time of the first job on each machine
+    
+        # Calculate the completion time of the first job on each machine
         for machine in range(self.problem.num_machines):
             if machine == 0:
                 completion_times[0][machine] = self.sequence[0].processing_times[machine]
             else:
                 completion_times[0][machine] = completion_times[0][machine - 1] + self.sequence[0].processing_times[machine]
-
-    # Calculate the completion time of each job on the first machine
+        # Calculate the completion time of each job on the first machine
         for job in range(1, self.problem.num_jobs):
             completion_times[job][0] = completion_times[job - 1][0] + self.sequence[job].processing_times[0]
-
+        
         # Calculate the completion time of each job on each machine
         for job in range(1, self.problem.num_jobs):
             for machine in range(1, self.problem.num_machines):
                 completion_times[job][machine] = max(completion_times[job - 1][machine], completion_times[job][machine - 1]) + self.sequence[job].processing_times[machine]
-
+        
         # The makespan is the completion time of the last job on the last machine
         makespan = completion_times[-1][-1]
-
         return makespan
+
 
     def lower_bound(self) -> Optional[Objective]:
         # Calculate the load on each machine
@@ -67,12 +76,13 @@ class Solution:
         # The lower bound is the maximum load on any machine
         return max(loads)
 
+
     def lower_bound_increment(self, job: Component, machine: int) -> Optional[Objective]:
         # Calculate the increment in the load on the machine
         increment = job.processing_times[machine]
-
         # The increment in the lower bound is the increment in the load
         return increment
+
 
     def add_moves(self) -> Iterable[Component]:
     # Generate all pairs of jobs in the sequence
@@ -81,19 +91,20 @@ class Solution:
                 # Yield a tuple representing a swap of jobs i and j
                 yield (i, j)
 
+
     def add(self, job: Component) -> None:
     # Add the job to the end of the sequence
         self.sequence.append(job)
 
 
-
+# ------------------------------------------------------------------------------------------------------- #
 
 
 class Problem:
-    def __init__(self, jobs: list[Component]):
-        self.jobs = jobs  # list of jobs
+    def __init__(self, jobs: list[Component], num_machines: int):
+        self.jobs = jobs  # lista de jobs
         self.num_jobs = len(jobs)
-        self.num_machines = len(jobs[0].processing_times)
+        self.num_machines = num_machines
 
     def __str__(self):
         s = ["{} jobs, {} machines".format(self.num_jobs, self.num_machines)]
@@ -103,26 +114,33 @@ class Problem:
 
     @classmethod
     def from_textio(cls, f: TextIO) -> Problem:
-        num_jobs, num_machines, *_ = map(int, f.readline().split())
+        line = f.readline().split()
+        num_jobs, num_machines = int(line[0]), int(line[1])
         print(f"Number of jobs: {num_jobs}, Number of machines: {num_machines}")
         jobs = []
-        
-        # Skip the additional values in the first line
-        f.readline()
-        
-        for i in range(num_jobs):
-            processing_times = list(map(int, f.readline().split()))
-            print(f"Processing times for Job {i}: {processing_times}")
-            assert len(processing_times) == num_machines
-            jobs.append(Component(i, processing_times))
-        return cls(jobs)
 
+        for i in range(num_machines):
+            processing_times = list(map(int, f.readline().split()))
+            print("Processing times for each job in machine {}: {}".format(i, processing_times))
+            #print("Expected number of machines: {}".format(num_machines))
+            print(processing_times)
+            #print("Actual number of machines in processing_times: {}".format(len(processing_times)))
+            #assert len(processing_times) == num_machines
+            jobs.append(Component(i, processing_times))
+        return cls(jobs, num_machines)
 
     def initial_solution(self) -> Solution:
-        # Create a solution with the jobs in their initial order
-        initial_sequence = self.jobs.copy()
+        # Criar uma sequência inicial com base no número de máquinas
+        initial_sequence = [Component(i, [0] * self.num_machines) for i in range(self.num_jobs)]
+            # Adicionar os valores específicos para cada processing_times
         return Solution(self, initial_sequence)
 
+    def empty_solution(self) -> Solution:
+        empty_solution = []
+        return Solution(self, [])
+
+
+# ------------------------------------------------------------------------------------------------------- #
 
 
 if __name__ == '__main__':
@@ -131,35 +149,38 @@ if __name__ == '__main__':
     print("Problem:")
     print(problem)
 
+    # Test the Empty solution
+    s0 = problem.empty_solution()
+    print("\nEmpty solution:")
+    print(s0.sequence)
+
     # Test the Solution object and its methods
-    s = problem.initial_solution()
+    s1 = problem.initial_solution()
     print("\nInitial Solution:")
-    print(s.sequence)
+    print(s1.sequence)
 
     # Test the Solution.is_feasible method
-    print("\nIs Feasible:", s.is_feasible())
+    print("\nIs Feasible:", s1.is_feasible())
 
     # Test the Solution.objective method
-    print("Objective:", s.objective())
+    print("Objective:", s1.objective())
 
     # Test the Solution.lower_bound method
-    print("Lower Bound:", s.lower_bound())
+    print("Lower Bound:", s1.lower_bound())
 
     # Test the Solution.lower_bound_increment method
-    if s.is_feasible():
-        job = s.sequence[0]  # Choose a job from the sequence
+    if s1.is_feasible():
+        job = s1.sequence[0]  # Choose a job from the sequence
         machine = 0  # Choose a machine
-        print("Lower Bound Increment:", s.lower_bound_increment(job, machine))
+        print("Lower Bound Increment:", s1.lower_bound_increment(job, machine))
 
     # Test the Solution.add_moves method
     print("\nPossible Moves:")
-    for move in s.add_moves():
+    for move in s1.add_moves():
         print(move)
 
     # Test the Solution.add method
     new_job = Component(99, [1, 2, 3])  # Create a new job
-    s.add(new_job)
+    s1.add(new_job)
     print("\nUpdated Solution:")
-    print(s.sequence)
-
-    
+    print(s1.sequence)    
