@@ -157,9 +157,7 @@ class Problem:
         s = [str(self.n), str(self.m)] + list(map(str, self.q))
         for i in range(self.n):
             s.append(" ".join(map(str, self.r[i])))
-        return " \n".join(s)
-
-
+        return "\n ".join(s)
 
     @classmethod
     def from_textio(cls, textio: TextIO) -> Problem:
@@ -169,8 +167,6 @@ class Problem:
             return cls([], r)  # Pass an empty q since it's not needed
         except (ValueError, IndexError):
             raise ValueError("Invalid input format")
-
-
 
 
 
