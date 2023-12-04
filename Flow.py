@@ -146,21 +146,33 @@ class Problem:
     def __init__(self, q, r):
         self.q = q
         self.r = r
-        self.n = len(q)
-        self.m = len(r[0])
-        self.lb = max(sum(self.q), sum([max(self.r[i]) for i in range(self.n)]))
+        self.n = len(r)  # Number of jobs
+        self.m = len(r[0]) if r else 0  # Number of machines, assuming r is not empty
+        if not q or not r:
+            self.lb = 0
+        else:
+            self.lb = max(sum(q), sum([max(r[i]) for i in range(self.n)]))
+
+    def __str__(self):
+        s = [str(self.n), str(self.m)] + list(map(str, self.q))
+        for i in range(self.n):
+            s.append(" ".join(map(str, self.r[i])))
+        return " \n".join(s)
+
+
 
     @classmethod
     def from_textio(cls, textio: TextIO) -> Problem:
-        m, n, *q = map(int, textio.readline().split())
-        r = [list(map(int, textio.readline().split())) for _ in range(n)]
-        return cls(q, r)
+        try:
+            m, n = map(int, textio.readline().split()[:2])  # Read only the first two numbers
+            r = [list(map(int, textio.readline().split())) for _ in range(n)]
+            return cls([], r)  # Pass an empty q since it's not needed
+        except (ValueError, IndexError):
+            raise ValueError("Invalid input format")
 
-    def __str__(self):
-        s = [str(self.n), str(self.m)]  # Corrected order of n and m
-        for i in range(self.n):
-            s.append(" ".join(map(str, self.r[i])))
-        return "\n".join(s)
+
+
+
 
 # ...
 
