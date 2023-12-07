@@ -57,7 +57,7 @@ class Solution:
         return self.lb # Return the lower bound value for this solution if defined, otherwise return None
     
     def _can_add(self, jobid):
-        return True # sempre se pode adicionar um trabalho
+        return True # adicionar função que diga que só se pode adicionar quando estiver acabado no anterior
     
     def _can_swap(self, jobid_add, jobid_rem):
         return True # sempre se pode trocar dois trabalhos
@@ -167,6 +167,13 @@ class Problem:
             return cls([], r)  # Pass an empty q since it's not needed
         except (ValueError, IndexError):
             raise ValueError("Invalid input format")
+    
+    def empty_solution(self) -> Solution:
+        """
+        Create an empty solution for the problem.
+        This method should return a Solution instance that represents an empty solution for the given problem.
+        """
+        return Solution(self, [], set(range(self.m)), [0] * self.n, 0, self.lb)
 
 
 
