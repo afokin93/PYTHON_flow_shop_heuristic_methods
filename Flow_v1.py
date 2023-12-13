@@ -80,7 +80,6 @@ class Solution:
 
     # Add, remove and swap movements
     def local_moves(self) -> Iterable[LocalMove]:
-
         for jobid in self.unused: # para adicionar
             if self._can_add(jobid):
                 yield LocalMove(jobid, None)
@@ -133,9 +132,10 @@ class Solution:
     
     # O incremento da função objetivo: diff entre os tempos dos trabalhos na última máquina [se local search]
     def objective_incr_local(self, lmove: LocalMove) -> Optional[Objective]:
-        return (self.problem.r[-1][lmove.jobid_rem] if lmove.jobid_rem is not None else 0)\
+        incr = (self.problem.r[-1][lmove.jobid_rem] if lmove.jobid_rem is not None else 0)\
               -(self.problem.r[-1][lmove.jobid_add] if lmove.jobid_add is not None else 0) 
-    
+        return incr
+
     # O incremento da função objetivo: diff entre os tempos dos trabalhos na última máquina [se construtivo]
     def objective_incr_add(self, c: Component) -> Optional[Objective]:
         return self.problem.r[-1][c.jobid]
