@@ -134,12 +134,22 @@ class Solution:
         lb = self._lb_update_add(c.jobid) # calcula o novo lower bound
         return lb - self.lb # retorna a diferença entre o novo e o antigo lower bound
     
-    def _lb_update_add(self, jobid): # função auxiliar para calcular o lower bound após adicionar um trabalho
+    def _lb_update_add(self, jobid):
         prob = self.problem
-        lb = 0 # inicializa o lower bound
-        for i in range(prob.n): # para cada máquina
-            lb = max(lb, self.q[i] + prob.r[i][jobid]) # o lower bound é o máximo entre o lower bound atual e o tempo de processamento na máquina atual mais o tempo do trabalho
-        return lb # retorna o lower bound
+        machine_loads = [0] * prob.m  # Lista para armazenar as cargas de cada máquina
+
+        for i in range(prob.n):  # Para cada trabalho na solução
+            for j in range(prob.m):  # Para cada máquina
+                if i in self.used:
+                    machine_loads[j] += prob.r[i][j]  # Adiciona o tempo de processamento do trabalho na máquina
+
+        return max(machine_loads)  # Retorna a maior carga entre todas as máquinas
+
+
+
+
+
+
 
 # -----
 class Problem:

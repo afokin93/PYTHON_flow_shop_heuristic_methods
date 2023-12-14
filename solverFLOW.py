@@ -51,7 +51,7 @@ def greed_construction_random_tie_breaking(problem):
     s = problem.empty_solution()
     ci = s.add_moves() #todas as componentes que podemos add
     c = next(ci, None) #considerar a 1a, se nõa houver usar none, solucao vazia
-    while c is not None:
+    while c is not None: 
         best_c, best_incr = [c], s.lower_bound_incr_add(c) #melhor incremento
         for c in ci:
             incr = s.lower_bound_incr_add(c)
@@ -62,10 +62,10 @@ def greed_construction_random_tie_breaking(problem):
         s.add(random.choice(best_c))
         ci = s.add_moves()
         c = next(ci, None)
-    return s
+    return s 
 
 def greed_randomize_adaptive_construction(problem, alpha=0): #aqui vamos por numa lista para ir comparando os valores, mais flexibilidade, alfa pequeno gera valores melhores
-    s = problem.empty_solution()
+    s = problem.empty_solution()     
     cl = [(s.lower_bound_incr_add(c), c) for c in s.add_moves()] #candidate list e enumera elas
     while len(cl) != 0:
         c_min = min(cl, key=operator.itemgetter(0))[0]
@@ -98,7 +98,7 @@ if __name__ == '__main__':
     print("Obj:", "{:.2f}".format(sol3.objective()), 'Sol:', sol3)
     sol4 = grasp(prob, 2, 0.01)
     print("Obj:", "{:.2f}".format(sol4.objective()), 'Sol:', sol4)
-    sol5 = best_improvement(prob.empty_solution())
-    print("Obj:", "{:.2f}".format(sol5.objective()), 'Sol:', sol5)
-    sol6 = first_improvement(prob.empty_solution())
-    print("Obj:", "{:.2f}".format(sol6.objective()), 'Sol:', sol6)
+    #sol5 = best_improvement(prob.empty_solution())
+    #print("Obj:", "{:.2f}".format(sol5.objective()), 'Sol:', sol5)
+    #sol6 = first_improvement(prob.empty_solution())
+    #print("Obj:", "{:.2f}".format(sol6.objective()), 'Sol:', sol6)
