@@ -93,13 +93,31 @@ if __name__ == '__main__':
     
     #sol1 = greed_construction(prob)
     #print("Obj:", "{:.2f}".format(sol1.objective()), 'Sol:', sol1)
-    sol2 = greed_construction_random_tie_breaking(prob)
-    print("Obj:", "{:.2f}".format(sol2.objective()), 'Sol:', sol2)
-    sol3 = greed_randomize_adaptive_construction(prob, 0.01) #alfa pequeno melhor
-    print("Obj:", "{:.2f}".format(sol3.objective()), 'Sol:', sol3)
-    sol4 = grasp(prob, 2, 0.01)
-    print("Obj:", "{:.2f}".format(sol4.objective()), 'Sol:', sol4)
+    #sol2 = greed_construction_random_tie_breaking(prob)
+    #print("Obj:", "{:.2f}".format(sol2.objective()), 'Sol:', sol2)
+    #sol3 = greed_randomize_adaptive_construction(prob, 0.01) #alfa pequeno melhor
+    #print("Obj:", "{:.2f}".format(sol3.objective()), 'Sol:', sol3)
+    #sol4 = grasp(prob, 2, 0.01)
+    #print("Obj:", "{:.2f}".format(sol4.objective()), 'Sol:', sol4)
     #sol5 = best_improvement(prob.empty_solution())
     #print("Obj:", "{:.2f}".format(sol5.objective()), 'Sol:', sol5)
     #sol6 = first_improvement(prob.empty_solution())
     #print("Obj:", "{:.2f}".format(sol6.objective()), 'Sol:', sol6)
+    #for i in range(10):
+        #sol1 = greed_construction(prob)
+        #print(f'Run {i+1} - Obj: {"{:.2f}".format(sol1.objective())}, Sol: {sol1}')
+
+    # Run greed_construction_random_tie_breaking 10 times
+    for i in range(10):
+        sol2 = greed_construction_random_tie_breaking(prob)
+        print(f'Run {i+1} - Obj: {"{:.2f}".format(sol2.objective())}, Sol: {sol2}')
+
+    # Run greed_randomize_adaptive_construction 10 times
+    for i in range(10):
+        sol3 = greed_randomize_adaptive_construction(prob, 0.01)
+        print(f'Run {i+1} - Obj: {"{:.2f}".format(sol3.objective())}, Sol: {sol3}')
+
+    # Run grasp 10 times
+    for i in range(10):
+        sol4 = grasp(prob, 2, 0.01)
+        print(f'Run {i+1} - Obj: {"{:.2f}".format(sol4.objective())}, Sol: {sol4}')
