@@ -134,8 +134,8 @@ class Solution:
         lb = self._lb_update_add(c.jobid) # calcula o novo lower bound
         return lb - self.lb # retorna a diferença entre o novo e o antigo lower bound
     
-    '''
-    def _lb_update_add(self, jobid):
+
+    '''def _lb_update_add(self, jobid):
         prob = self.problem
         machine_loads = [0] * prob.m  # Lista para armazenar as cargas de cada máquina
 
@@ -145,18 +145,45 @@ class Solution:
                     machine_loads[j] += prob.r[i][j]  # Adiciona o tempo de processamento do trabalho na máquina
 
         return max(machine_loads)  # Retorna a maior carga entre todas as máquinas
-      '''  
+        '''
+
+
+    '''def _lb_update_add(self, jobid):
+        prob = self.problem
+        machine_loads = [0] * prob.m  # Lista para armazenar as cargas de cada máquina[^3^][3]
+        for i in range(prob.n):  # Para cada trabalho na solução
+            for j in range(prob.m):  # Para cada máquina[^4^][4][^5^][5]
+                if i in self.used:
+                    machine_loads[j] += prob.r[i][j]  # Adiciona o tempo de processamento do trabalho na máquina[^6^][6]
+
+        # Calculate P_i for each machine
+        P = []
+
+        for i in range(prob.m):
+            if i < len(prob.r):  # Check if i is within the range of indices for prob.r
+                P_i = sum(prob.r[i])  # Sum of processing times on machine i
+                if i > 0:
+                    P_i += min([sum(prob.r[r][:i]) for r in range(prob.n)])  # Add min of sums on preceding machines
+                if i < prob.m - 1:
+                    P_i += min([sum(prob.r[r][i+1:]) for r in range(prob.n)])  # Add min of sums on subsequent machines
+                P.append(P_i)
+
+        # Set L^+_M to the maximum of P_i values
+        L_plus_M = max(P)
+        return L_plus_M
+ '''
     def _lb_update_add(self, jobid):
         prob = self.problem
-        job_loads = [0] * prob.n  # List to store the loads of each job
-        for i in range(prob.n):  # For each job in the solution
-            for j in range(prob.m):  # For each machine
-                if i in self.used:
-                    job_loads[i] += prob.r[i][j]  # Add the processing time of the job on the machine
+        Q = [0] * prob.n  # List to store the Q_j values for each job
+        for j in range(prob.n):  # For each job in the solution[^3^][3]
+            Q[j] = sum(prob.r[j])  # Sum of processing times on job j
+            for s in range(prob.n):  # For each other job
+                if s != j:
+                    Q[j] += min(prob.r[s][0], prob.r[s][-1])  # Add min of first and last processing times
 
-        # Calculate L_J
-        L_J = max(job_loads)
-        return L_J
+        # Calculate L'_J
+        L_prime_J = max(Q)
+        return L_prime_J
 
 
 

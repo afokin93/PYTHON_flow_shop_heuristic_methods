@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TextIO, Optional, Any
 import sys , random, operator, time
 
-import Flow as flow
+import FLOWV1 as flow
 
 def greed_construction(problem):
     s = problem.empty_solution()
@@ -90,8 +90,9 @@ def grasp(problem, budget, alpha=0):
 
 if __name__ == '__main__':
     prob = flow.Problem.from_textio(sys.stdin) #instanciar o problema
-    sol1 = greed_construction(prob)
-    print("Obj:", "{:.2f}".format(sol1.objective()), 'Sol:', sol1)
+    
+    #sol1 = greed_construction(prob)
+    #print("Obj:", "{:.2f}".format(sol1.objective()), 'Sol:', sol1)
     sol2 = greed_construction_random_tie_breaking(prob)
     print("Obj:", "{:.2f}".format(sol2.objective()), 'Sol:', sol2)
     sol3 = greed_randomize_adaptive_construction(prob, 0.01) #alfa pequeno melhor
