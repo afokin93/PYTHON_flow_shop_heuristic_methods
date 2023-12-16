@@ -21,8 +21,6 @@ def first_improvement(s):
         v = next(vi, None) 
     return s
 
-
-
 # Best improvement (local search)
 def best_improvement(s):
     vi = s.local_moves() #VI movement iterator
@@ -40,7 +38,6 @@ def best_improvement(s):
         v = next(vi, None)
     return s
 
-
 # Greedy construction (constructive method)
 def greed_construction(problem):
     s = problem.empty_solution()
@@ -57,7 +54,6 @@ def greed_construction(problem):
         ci = s.add_moves()
         c = next(ci, None)
     return s
-
 
 # Construção gulosa com desempate aleatório (meta)
 def greed_construction_random_tie_breaking(problem):
@@ -78,7 +74,6 @@ def greed_construction_random_tie_breaking(problem):
         c = next(ci, None)
     return s
 
-
 # Construção gulosa com aleatoreidade adaptativa (meta)
 def greed_randomize_adaptive_construction(problem, alpha=0): #aqui vamos por numa lista para ir comparando os valores, mais flexibilidade, alfa pequeno gera valores melhores
     s = problem.empty_solution()
@@ -92,8 +87,7 @@ def greed_randomize_adaptive_construction(problem, alpha=0): #aqui vamos por num
         cl = [(s.lower_bound_incr_add(c), c) for c in s.add_moves()] # reinicia cl para o while continuar
     return s
 
-
-# Construção meta
+# Construção meta GRASP
 def grasp(problem, budget, alpha=0):
     start = time.perf_counter()
     best_s = greed_randomize_adaptive_construction(problem, alpha) #melhor solucao é a primeira
@@ -113,11 +107,12 @@ def grasp(problem, budget, alpha=0):
 
 if __name__ == '__main__':
     prob = flow.Problem.from_textio(sys.stdin) # Instanciar o problema
-
+    ### PARA PROCURA LOCAL
     sol1 = first_improvement(prob.initial_solution())
     print("FIRST IMPRV | Obj:", "{} --> ".format(sol1.objective()), 'Sol:', sol1)
     sol2 = best_improvement(prob.initial_solution())
     print("BEST IMPRV  | Obj:", "{} --> ".format(sol2.objective()), 'Sol:', sol2)
+    ### PARA MÉTODOS CONSTRUTIVOS E MISTOS
     sol3 = greed_construction(prob)
     print("GREEDY      | Obj:", "{} --> ".format(sol3.objective()), 'Sol:', sol3)
     sol4 = greed_construction_random_tie_breaking(prob)
