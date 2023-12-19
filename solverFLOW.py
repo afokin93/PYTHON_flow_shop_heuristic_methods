@@ -108,16 +108,36 @@ if __name__ == '__main__':
         #print(f'Run {i+1} - Obj: {"{:.2f}".format(sol1.objective())}, Sol: {sol1}')
 
     # Run greed_construction_random_tie_breaking 10 times
+    start_time1 = time.time()
     for i in range(10):
+        start_time = time.time()
         sol2 = greed_construction_random_tie_breaking(prob)
-        print(f'Run {i+1} - Obj: {"{:.2f}".format(sol2.objective())}, Sol: {sol2}')
-
+        end_time = time.time()
+        execution_time = end_time - start_time
+        print(f'Run {i+1} - Obj: {"{:.2f}".format(sol2.objective())}, Sol: {sol2}, Time: {execution_time}')
+    end_time1 = time.time()
+    execution_time1 = end_time1 - start_time1
+    print(f'Mean Time : {execution_time1/10}')
     # Run greed_randomize_adaptive_construction 10 times
+    
+    start_time2 = time.time()
     for i in range(10):
+        start_time = time.time()
         sol3 = greed_randomize_adaptive_construction(prob, 0.01)
-        print(f'Run {i+1} - Obj: {"{:.2f}".format(sol3.objective())}, Sol: {sol3}')
-
+        end_time = time.time()
+        execution_time = end_time - start_time
+        print(f'Run {i+1} - Obj: {"{:.2f}".format(sol3.objective())}, Sol: {sol3}, Time: {execution_time}')
+    end_time2 = time.time()
+    execution_time2 = end_time2 - start_time2
+    print(f'Mean Time : {execution_time2/10}')
     # Run grasp 10 times
+    start_time3 = time.time()
     for i in range(10):
+        start_time = time.time()
         sol4 = grasp(prob, 2, 0.01)
-        print(f'Run {i+1} - Obj: {"{:.2f}".format(sol4.objective())}, Sol: {sol4}')
+        end_time = time.time()
+        execution_time = end_time - start_time
+        print(f'Run {i+1} - Obj: {"{:.2f}".format(sol4.objective())}, Sol: {sol4}, Time: {execution_time}')
+    end_time3 = time.time()
+    execution_time3 = end_time3 - start_time3
+    print(f'Mean Time : {execution_time3/10}')

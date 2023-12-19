@@ -134,7 +134,7 @@ class Solution:
         lb = self._lb_update_add(c.jobid) # calcula o novo lower bound
         return lb - self.lb # retorna a diferença entre o novo e o antigo lower bound
     
-    '''
+    #L1
     def _lb_update_add(self, jobid):
         prob = self.problem
         machine_loads = [0] * prob.m  # Lista para armazenar as cargas de cada máquina
@@ -145,7 +145,34 @@ class Solution:
                     machine_loads[j] += prob.r[i][j]  # Adiciona o tempo de processamento do trabalho na máquina
 
         return max(machine_loads)  # Retorna a maior carga entre todas as máquinas
-      '''  
+    #L2
+    '''
+    def _lb_update_add(self, jobid):
+        prob = self.problem
+        machine_loads = [0] * prob.m  # Lista para armazenar as cargas de cada máquina
+        for i in range(prob.n):  # Para cada trabalho na solução
+            for j in range(prob.m):  # Para cada máquina
+                if i in self.used:
+                    machine_loads[j] += prob.r[i][j]  # Adiciona o tempo de processamento do trabalho na máquina
+
+        # Calculate P_i for each machine
+        P = []
+
+        for i in range(prob.m):
+            if i < len(prob.r):  # Check if i is within the range of indices for prob.r
+                P_i = sum(prob.r[i])  # Sum of processing times on machine i
+                if i > 0:
+                    P_i += min([sum(prob.r[r][:i]) for r in range(prob.n)])  # Add min of sums on preceding machines
+                if i < prob.m - 1:
+                    P_i += min([sum(prob.r[r][i+1:]) for r in range(prob.n)])  # Add min of sums on subsequent machines
+                P.append(P_i)
+
+        # Set L^+_M to the maximum of P_i values
+        L_plus_M = max(P)
+        return L_plus_M
+    '''
+    ''' 
+    #L3 
     def _lb_update_add(self, jobid):
         prob = self.problem
         job_loads = [0] * prob.n  # List to store the loads of each job
@@ -157,6 +184,57 @@ class Solution:
         # Calculate L_J
         L_J = max(job_loads)
         return L_J
+    '''
+  #L4
+    '''
+    def _lb_update_add(self, jobid):
+        prob = self.problem
+        Q = [0] * prob.n  # List to store the Q_j values for each job
+        for j in range(prob.n):  # For each job in the solution[^3^][3]
+            Q[j] = sum(prob.r[j])  # Sum of processing times on job j
+            for s in range(prob.n):  # For each other job
+                if s != j:
+                    Q[j] += min(prob.r[s][0], prob.r[s][-1])  # Add min of first and last processing times
+
+        # Calculate L'_J
+        L_prime_J = max(Q)
+        return L_prime_J
+    '''
+#L5
+    
+    def _lb_update_add(self, jobid):
+        prob = self.problem
+
+        # Step 1: For each machine i, sort the p_{ij} values in non-decreasing order.
+        if prob.m <= len(prob.r):
+            tau = [sorted(prob.r[i]) for i in range(prob.m)]
+        else:
+            #print("Error: The number of machines is greater than the length of prob.r.")
+            return 0
+        # Step 2: Let sigma_{ik} denote sum_{k'=1}^{k} tau_{i,k'}.
+        sigma = [[sum(tau[i][:k+1]) for k in range(prob.n)] for i in range(prob.m)]
+
+        # Step 3: Compute a lower bound gamma_{ik} on the time at which machine i finishes processing the kth job in the sequence.
+        gamma = [[0]*prob.n for _ in range(prob.m)]
+
+        # Step 4: For all k, gamma_{1k} is set to sigma_{1k}.
+        gamma[0] = sigma[0]
+
+        # Step 5: For all i, gamma_{i1} is set to min_{j} {sum_{i'=1}^{i} p_{i',j}}.
+        for i in range(1, prob.m):
+            gamma[i][0] = min([sum(prob.r[i_prime][j] for i_prime in range(i+1)) for j in range(prob.n)])
+
+        # Step 6: For i = 2, ..., m and k = 2, ..., n, gamma_{ik} is set to the larger of the following four values:
+        for i in range(1, prob.m):
+            for k in range(1, prob.n):
+                beta_1ik = sigma[i][k] + gamma[i-1][0]
+                beta_2ik = sigma[i][k-1] + gamma[i][0]
+                beta_3ik = max([gamma[i_prime][k-1] + min([sum(prob.r[i_double_prime][j] for i_double_prime in range(i_prime, i+1)) for j in range(prob.n)]) for i_prime in range(i+1)])
+                beta_4ik = max([gamma[i_prime][k] + min([sum(prob.r[i_double_prime][j] for i_double_prime in range(i_prime+1, i+1)) for j in range(prob.n)]) for i_prime in range(i)])
+                gamma[i][k] = max(beta_1ik, beta_2ik, beta_3ik, beta_4ik)
+
+        # Step 7: At the end of the procedure, gamma_{mn} is a lower bound for the PFM.
+        return gamma[-1][-1]
 
 
 

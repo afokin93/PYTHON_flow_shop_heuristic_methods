@@ -146,15 +146,15 @@ class Solution:
 
         return max(machine_loads)  # Retorna a maior carga entre todas as máquinas
         '''
-
-
-    '''def _lb_update_add(self, jobid):
+#L2
+    '''
+    def _lb_update_add(self, jobid):
         prob = self.problem
-        machine_loads = [0] * prob.m  # Lista para armazenar as cargas de cada máquina[^3^][3]
+        machine_loads = [0] * prob.m  # Lista para armazenar as cargas de cada máquina
         for i in range(prob.n):  # Para cada trabalho na solução
-            for j in range(prob.m):  # Para cada máquina[^4^][4][^5^][5]
+            for j in range(prob.m):  # Para cada máquina
                 if i in self.used:
-                    machine_loads[j] += prob.r[i][j]  # Adiciona o tempo de processamento do trabalho na máquina[^6^][6]
+                    machine_loads[j] += prob.r[i][j]  # Adiciona o tempo de processamento do trabalho na máquina
 
         # Calculate P_i for each machine
         P = []
@@ -171,8 +171,10 @@ class Solution:
         # Set L^+_M to the maximum of P_i values
         L_plus_M = max(P)
         return L_plus_M
- '''
-    '''def _lb_update_add(self, jobid):
+    '''
+  #L4
+    '''
+    def _lb_update_add(self, jobid):
         prob = self.problem
         Q = [0] * prob.n  # List to store the Q_j values for each job
         for j in range(prob.n):  # For each job in the solution[^3^][3]
@@ -184,7 +186,9 @@ class Solution:
         # Calculate L'_J
         L_prime_J = max(Q)
         return L_prime_J
-'''
+    '''
+#L5
+    
     def _lb_update_add(self, jobid):
         prob = self.problem
 
@@ -218,7 +222,7 @@ class Solution:
 
         # Step 7: At the end of the procedure, gamma_{mn} is a lower bound for the PFM.
         return gamma[-1][-1]
-
+    
 
 
 
