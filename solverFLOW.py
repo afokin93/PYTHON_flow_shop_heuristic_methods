@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TextIO, Optional, Any
 import sys , random, operator, time
 
-import FLOWV1 as flow
+import Flow as flow
 
 def greed_construction(problem):
     s = problem.empty_solution()

@@ -15,7 +15,7 @@ class Component: # o que é uma componente neste problema? > um trabalho
         return self.jobid
 
 # -----
-
+'''
 class LocalMove: # par de valores, quando for None não é para acontecer
     def __init__(self, jobid_add, jobid_rem):
         self.jobid_add = jobid_add
@@ -23,7 +23,7 @@ class LocalMove: # par de valores, quando for None não é para acontecer
     
     def __str__(self):
         return "jobid_add: {}, jobid_rem: {}".format(self.jobid_add, self.jobid_rem)
-
+'''
 # -----
 
 class Solution:
@@ -67,7 +67,7 @@ class Solution:
         for jobid in self.unused:
             if self._can_add(jobid):
                 yield Component(jobid) # yield: objeto que guarda resultados de funções
-    
+    '''
     def local_moves(self) -> Iterable[LocalMove]: # movimentos de adicionar, remover e de trocar
         """
         Return an iterable (generator, iterator, or iterable object)
@@ -82,7 +82,7 @@ class Solution:
             for jobid_rem in self.used:
                 if self._can_swap(jobid_add, jobid_rem):
                     yield LocalMove(jobid_add, jobid_rem)
-    
+    '''
     def _add_job(self, jobid): # função auxiliar para ajudar na próxima função / adiciona um trabalho à solução
         prob = self.problem
         self.used.append(jobid)
@@ -94,6 +94,7 @@ class Solution:
                 self.q[i] = max(self.q[i], self.q[i-1]) + prob.r[i][jobid] # o tempo de processamento é o máximo entre o tempo da máquina anterior e o tempo da máquina atual, mais o tempo do trabalho
         self.p = self.q[-1] # o makespan é o tempo da última máquina
     
+    '''
     def _remove_job(self, jobid): # função auxiliar para ajudar na próxima função / remove um trabalho à solução
         prob = self.problem
         self.used.remove(jobid)
@@ -104,10 +105,12 @@ class Solution:
             else: # se não for a primeira máquina
                 self.q[i] = max(self.q[i] - prob.r[i][jobid], self.q[i-1]) # o tempo de processamento é o máximo entre o tempo da máquina anterior e o tempo da máquina atual, menos o tempo do trabalho
         self.p = self.q[-1] # o makespan é o tempo da última máquina
-    
+    '''
     def add(self, c: Component) -> None: # adiciona um componente à solução
         self._add_job(c.jobid)
         self.lb = self._lb_update_add(c.jobid) # atualiza o lower bound
+    
+    '''
     def step(self, lmove: LocalMove) -> None:
         # TODO # This invalidates the lower bound
         # Apply a local move to the solution. This invalidates any previously generated components and local moves.
@@ -118,7 +121,7 @@ class Solution:
             self._add_job(lmove.jobid_add)
             # self.lb = self._lb_update_add(c.jobid_add)
         # se houver algo para retirar, retiramos, se houver para acrescentar, o fazemos
-    
+    '''
     def objective_incr_local(self, lmove: LocalMove) -> Optional[Objective]:
         return (self.problem.r[-1][lmove.jobid_rem] if lmove.jobid_rem is not None else 0) - (self.problem.r[-1][lmove.jobid_add] if
         lmove.jobid_add is not None else 0) # o incremento da função objetivo é a diferença entre os tempos dos trabalhos na última máquina
@@ -135,6 +138,7 @@ class Solution:
         return lb - self.lb # retorna a diferença entre o novo e o antigo lower bound
     
     #L1
+    '''
     def _lb_update_add(self, jobid):
         prob = self.problem
         machine_loads = [0] * prob.m  # Lista para armazenar as cargas de cada máquina
@@ -146,6 +150,7 @@ class Solution:
 
         return max(machine_loads)  # Retorna a maior carga entre todas as máquinas
     #L2
+    '''
     '''
     def _lb_update_add(self, jobid):
         prob = self.problem
