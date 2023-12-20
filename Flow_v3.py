@@ -181,7 +181,7 @@ class Solution:
         lb = self._lb_update_add(c.jobid) # calcula o novo lower bound
         return lb - self.lb # retorna a diferença entre o novo e o antigo lower bound
     
-
+    #L1
     '''def _lb_update_add(self, jobid):
         prob = self.problem
         machine_loads = [0] * prob.m  # Lista para armazenar as cargas de cada máquina
@@ -190,7 +190,7 @@ class Solution:
                 if i in self.used:
                     machine_loads[j] += prob.r[i][j]  # Adiciona o tempo de processamento do trabalho na máquina
         return max(machine_loads)  # Retorna a maior carga entre todas as máquinas'''
-
+    #L2
     '''def _lb_update_add(self, jobid):
         prob = self.problem
         machine_loads = [0] * prob.m  # Lista para armazenar as cargas de cada máquina[^3^][3]
@@ -211,7 +211,21 @@ class Solution:
         # Set L^+_M to the maximum of P_i values
         L_plus_M = max(P)
         return L_plus_M'''
+    ''' 
+    #L3 
+    def _lb_update_add(self, jobid):
+        prob = self.problem
+        job_loads = [0] * prob.n  # List to store the loads of each job
+        for i in range(prob.n):  # For each job in the solution
+            for j in range(prob.m):  # For each machine
+                if i in self.used:
+                    job_loads[i] += prob.r[i][j]  # Add the processing time of the job on the machine
 
+        # Calculate L_J
+        L_J = max(job_loads)
+        return L_J
+    '''
+    #L4
     '''def _lb_update_add(self, jobid):
         prob = self.problem
         T = [0] * prob.n  # List to store the Q_j values for each job
@@ -223,7 +237,7 @@ class Solution:
         # Calculate L'_J
         L_prime_J = max(Q)
         return L_prime_J'''
-
+    #L5
     def _lb_update_add(self, jobid): ### PARA MÉTODO CONSTRUTIVO
         prob = self.problem
         # Step 1: For each machine i, sort the p_{ij} values in non-decreasing order.
